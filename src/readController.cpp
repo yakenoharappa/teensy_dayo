@@ -1,0 +1,139 @@
+#include "readController.h"
+
+
+data dController;
+data dGood;
+Stick L;
+Stick R;
+Button Key1;
+Button Key2;
+
+
+void readController_Setup(){
+
+    Serial.println("Controller_Begin!");
+    for (int i = 0; i < 8; i++)
+    {
+        Key1.Numbers[i] = Keys1[i];
+        Key2.Numbers[i] = Keys2[i];
+        Key1.Names[i] = Keys1Name[i];
+        Key2.Names[i] = Keys2Name[i];
+    }
+}
+
+void readController_Update(){
+    
+    /* Serial1.Checker
+    Serial.println(Serial1.read(), BIN);
+    Serial.println(Serial1.read(), BIN);
+    Serial.println(Serial1.read(), BIN);
+    Serial.println(Serial1.read(), BIN);
+    Serial.println(" ");
+    */
+
+    Serial.println(" ");
+    Serial.println("Contoller-----------------------------");
+
+    while (Serials[ControllerSerial]->available() >= HowManyData )
+    {
+        while ( Serials[ControllerSerial]->available() >= HowManyData * 2  &&  Serial1.peek() != start )
+        {
+            Serials[ControllerSerial]->read();
+        }
+        
+        dController.start = Serials[ControllerSerial]->read();
+        if (uint8_t(dController.start) == start)
+        {
+            dController.one = Serials[ControllerSerial]->read();
+            dController.two = Serials[ControllerSerial]->read();
+            dController.three = Serials[ControllerSerial]->read();
+            dController.four = Serials[ControllerSerial]->read();
+            dController.five = Serials[ControllerSerial]->read();
+            dController.six = Serials[ControllerSerial]->read();
+            dController.fin = Serials[ControllerSerial]->read();
+
+
+            if (uint8_t(dController.fin) == 0xAA)
+            {
+                dGood.one = dController.one;
+                dGood.two = dController.two;
+                dGood.three = dController.three;
+                dGood.four = dController.four;
+                dGood.five = dController.five;
+                dGood.six = dController.six;
+                dGood.fin = dController.fin;
+            }
+        }
+    }
+
+    if ( uint8_t(dGood.one) == 0xDD && uint8_t(dGood.two) == 0xDD && uint8_t(dGood.three) == 0xDD && u_int8_t(dGood.four) == 0xDD && uint8_t(dGood.five) == 0xDD && uint8_t(dGood.six) == 0xDD)
+    {
+        Serial.println("unpearing");
+    }
+    else{
+        Serial.print(dGood.one);
+        Serial.print(", ");
+        Serial.print(dGood.two);
+        Serial.print(", ");
+        Serial.print(dGood.three);
+        Serial.print(", ");
+        Serial.print(dGood.four);
+        Serial.print(", ");
+        Serial.print(dGood.five, BIN);
+        Serial.print(", ");
+        Serial.println(dGood.six, BIN);
+    }
+
+
+    L.x = dGood.one;
+    L.y = dGood.two;
+    R.x = dGood.three;
+    R.y = dGood.four;
+
+
+
+    Serial.print("L.Stickdeg: ");
+    Serial.print( radian_deg(L.Stickdeg()) );
+    Serial.print(", R.Stickdeg: ");
+    Serial.print( radian_deg(R.Stickdeg()) );
+    Serial.print(", ");
+
+    //クリックしているかの、配列を作成。
+    for (int i = 0; i < 8; i++){
+        if ( (dGood.five >> Key1.Numbers[i] & 0b01) == 0b01 ){
+            Key1.values[i] = true;
+        }
+        else{
+            Key1.values[i] = false;
+        }
+    }
+    for (int i = 0; i < 8; i++){
+        if ( (dGood.six >> Key2.Numbers[i] & 0b01) == 0b01){
+            Key2.values[i] = true;
+        }
+        else{
+            Key2.values[i] = false;
+        }
+    }
+
+    //配列を確認して、どのキーが押されているかを表示。"Key?.values[Defineしたkeys] == true"でいけます。
+    for (int i = 0; i < 8; i++){
+        if (Key1.values[Key1.Numbers[i]] == true)
+        {
+            Serial.print(Key1.Names[i]);
+            Serial.print(", ");
+        }
+    }
+    for (int i = 0; i < 8; i++){
+        if (Key2.values[Key2.Numbers[i]] == true)
+        {
+            Serial.print(Key2.Names[i]);
+            Serial.print(", ");
+        }
+    }
+
+    Serial.println(" ");
+
+}
+
+//00000000
