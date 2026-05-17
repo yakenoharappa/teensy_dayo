@@ -80,9 +80,7 @@ void Jyunya_Setup() {
     myWire.begin();
 
     pinMode(Reset_Button,INPUT_PULLDOWN); //内部プルアップを有効に
-    pinMode(LED_BUILTIN, OUTPUT);
-    pinMode(PIN_LED2, OUTPUT);
-    pinMode(PIN_LED3, OUTPUT);
+
     //下記のOPERATION_MODE_IMUPLUSを追加してみました。どっちのほうがいいか、比較検討してみてください。
 
     //LSM__Weather Begin

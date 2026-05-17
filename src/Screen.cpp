@@ -9,7 +9,6 @@
 bool KickerOnOff = 1;
 
 //controller.cppへ
-bool ContollerConnected = 1;
 
 
 //Motor.cpp
@@ -40,10 +39,15 @@ int Line_r = 30;
 int LineSize = 6;
 bool Line[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire1, -1);
 Status now = Status::Menu;
 
-UltraSonic MyUSonic;
+
+
+//GyroREAD
+Screen_Gyro BNOdeg;
+Screen_Gyro MIXdeg;
+Screen_Gyro LSMdeg;
 
 
 class triangle
@@ -60,7 +64,7 @@ public:
 };
 
 bool Enter(){
-    if ( digitalRead(Senter) == HIGH && (millis() - LastTouched) > 300 )
+    if ( (digitalRead(Senter) == HIGH || (Key2.values[SELECT] && ContollerConnected == true) ) && (millis() - LastTouched) > 300 )
     {
         LastTouched = millis();
         return true;
@@ -72,7 +76,7 @@ bool Enter(){
 }
 
 bool UpKey(){
-    if ( digitalRead(front) == HIGH && (millis() - LastTouched) > 300 )
+    if (  (digitalRead(front) == HIGH|| (Key1.values[Up] && ContollerConnected == true) ) && (millis() - LastTouched) > 300 )
     {
         LastTouched = millis();
         return true;
@@ -86,7 +90,7 @@ bool UpKey(){
 
 
 bool DownKey(){
-    if ( digitalRead(buttom) == HIGH && (millis() - LastTouched) > 300 )
+    if ( (digitalRead(buttom) == HIGH || (Key1.values[Down] && ContollerConnected == true) ) && (millis() - LastTouched) > 300 )
     {
         LastTouched = millis();
         return true;
@@ -145,7 +149,7 @@ void Screen_Setup(){
     pinMode(buttom, INPUT_PULLDOWN);
     
     TrySetup = 0;
-    
+    Wire.begin();
     while (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C) && TrySetup < 3) 
     {
         Serial.println("Connecting...");
@@ -162,9 +166,7 @@ void Screen_Setup(){
 }
 
 void Screen_Update(){
-    for (int i = 0; i < MyUSonic.amount; i++){
-        MyUSonic.value[i] ++;
-    }
+
 
 /*
     if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C) && TrySetup == 3){ //TrySetup==3つまり、失敗し続けた場合のみ実行。
@@ -348,9 +350,9 @@ void Screen_Update(){
     case Status::Gyro:
         Sita ++;
         Sita = DegRangeChange(Sita, 180);
-        //BNOdeg.degf = yaw_BNO;
-        //MIXdeg.degi = DAC_port;
-        //LSMdeg.degf = theta;
+        BNOdeg.degf = yaw_BNO;
+        MIXdeg.degi = DAC_port;
+        LSMdeg.degf = theta;
 
         radian = deg_radian(Sita);
         senga_Y2 = cos(radian) * 15;
@@ -368,9 +370,9 @@ void Screen_Update(){
         writeCircle(35, 0, 15);
         writeCircle(-35, 0, 15);
 
-        display.drawLine(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + senga_X2 + 0), (SCREEN_HEIGHT/2 - senga_Y2), WHITE);
-        display.drawLine(SCREEN_WIDTH/2 + 35, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + senga_X2 + 35), (SCREEN_HEIGHT/2 - senga_Y2), WHITE);
-        display.drawLine(SCREEN_WIDTH/2 - 35, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + senga_X2 - 35), (SCREEN_HEIGHT/2 - senga_Y2), WHITE);
+        display.drawLine(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + (MIXdeg.sinGi() * 15) + 0), (SCREEN_HEIGHT/2 - (MIXdeg.cosGi() * 15)), WHITE);
+        display.drawLine(SCREEN_WIDTH/2 + 35, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + (LSMdeg.sinGf() * 15) + 35), (SCREEN_HEIGHT/2 - (LSMdeg.cosGf() * 15)), WHITE);
+        display.drawLine(SCREEN_WIDTH/2 - 35, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + (BNOdeg.sinGf() * 15) - 35), (SCREEN_HEIGHT/2 - (BNOdeg.cosGf() * 15)), WHITE);
         display.setTextSize(1);
         display.setCursor(20, 35);
         display.println("BNO");
@@ -393,9 +395,9 @@ void Screen_Update(){
         display.setTextColor(SSD1306_WHITE);
         display.setCursor(0, SCREEN_HEIGHT - 10);
         display.print("deg=");
-        display.println(Sita);
+        display.println(MIXdeg.degi);
 
-        if ( digitalRead(Senter) == HIGH && (millis() - LastTouched) > 300)
+        if ( Enter() == true )
         {
             LastTouched = millis();
             now = Status::Menu;
@@ -418,12 +420,12 @@ void Screen_Update(){
         //display.drawRect(senter_square(10), SCREEN_HEIGHT/2 - 10/2 ,10, 10, WHITE);
         //display.drawRect(senter_square(10) + Line_r, SCREEN_HEIGHT/2 - 10/2 ,10, 10, WHITE);
 
-        if ( digitalRead(front) == HIGH && (millis() - LastTouched) > 300 )
+        if ( UpKey() == true )
         {
             LeftRight --;
             LastTouched = millis();
         }
-        else if (digitalRead(buttom) == HIGH && (millis() - LastTouched) > 300 ){
+        else if ( DownKey() == true ){
             LeftRight ++;
             LastTouched = millis();
         }
@@ -476,7 +478,7 @@ void Screen_Update(){
         }
 
 
-        if ( digitalRead(Senter) == HIGH && (millis() - LastTouched) > 300)
+        if ( Enter() == true )
         {
             LastTouched = millis();
             LeftRight = 1;
@@ -541,12 +543,16 @@ void Screen_Update(){
         display.setCursor(15, 15);
         display.println("ON!!!!");
         display.setCursor(15, 30);
+        
+        Kick();
         display.println("Please wait");
         for (int i = senter_square(SCREEN_WIDTH - 10); i < SCREEN_WIDTH - senter_square(SCREEN_WIDTH - 10) ; i++){
             display.drawLine(senter_square(SCREEN_WIDTH - 10), 50, i, 50, WHITE);
             display.display();
             delay(1);
         }
+        Kick();
+
         LeftRight = 2;
         now = Status::Menu;
         
@@ -562,8 +568,27 @@ void Screen_Update(){
             writeCircle(35, 15, 10);     //WriteLeftCircle
             writeCircle(-35, 15, 10);    //WriteRightCircle
             //スティックの座標に合わせて、変化させる。-128~128を-15~15に変換する。0.1171875をかける。
-            writefillCircle(35, 15, 2);
-            writefillCircle(-35, 15, 2);
+            writefillCircle(35 + (R.x * 15 / 128), 15 + (R.y * 15 / 128), 2);
+            writefillCircle(-35 + (L.x * 15 / 128), 15 + (L.y * 15 / 128), 2);
+            //配列を確認して、どのキーが押されているかを表示。"Key?.values[Defineしたkeys] == true"でいけます。
+            display.setTextSize(1);
+            for (int i = 0; i < 8; i++)
+            {
+                if (Key1.values[Key1.Numbers[i]] == true)
+                {
+                    display.print(Key1.Names[i]);
+                    display.print(", ");
+                }
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                if (Key2.values[Key2.Numbers[i]] == true)
+                {
+                    display.print(Key2.Names[i]);
+                    display.print(", ");
+                }
+            }
+            display.println();
         }
         else{
             display.setTextSize(1);
@@ -596,10 +621,10 @@ void Screen_Update(){
         {
             MotorSpeed--;
         }
-        else if (digitalRead(front) == HIGH && (millis() - LastTouched) > 75 && MotorSpeed < 100){
+        else if ( (digitalRead(front) == HIGH || (Key2.values[Up] && ContollerConnected == true) ) && (millis() - LastTouched) > 75 && MotorSpeed < 100){
             MotorSpeed++;
         }
-        else if (digitalRead(buttom) == HIGH && (millis() - LastTouched) > 75 && MotorSpeed > 0){
+        else if ( (digitalRead(buttom) == HIGH || (Key2.values[Down] && ContollerConnected == true) ) && (millis() - LastTouched) > 75 && MotorSpeed > 0){
             MotorSpeed--;
         }
         
@@ -717,17 +742,17 @@ void Screen_Update(){
 
 
     if (Timer != 999999){
-        if (UpKey() == true ){
+        if ( UpKey() == true ){
             Timer++;
         }
-        else if (DownKey() == true )
+        else if ( DownKey() == true )
         {
             Timer--;
         }
-        else if (digitalRead(front) == HIGH && (millis() - LastTouched) > 80 ){
+        else if ( (digitalRead(front) == HIGH || (Key2.values[Up] && ContollerConnected == true) ) && (millis() - LastTouched) > 80 ){
             Timer++;
         }
-        else if (digitalRead(buttom) == HIGH && (millis() - LastTouched) > 80 ){
+        else if ( (digitalRead(buttom) == HIGH || (Key2.values[Down] && ContollerConnected == true) ) && (millis() - LastTouched) > 80 ){
             Timer--;
         }
     }

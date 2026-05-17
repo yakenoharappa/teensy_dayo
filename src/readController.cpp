@@ -1,5 +1,6 @@
 #include "readController.h"
 
+bool ContollerConnected = 0;
 
 data dController;
 data dGood;
@@ -7,6 +8,7 @@ Stick L;
 Stick R;
 Button Key1;
 Button Key2;
+
 
 
 void readController_Setup(){
@@ -36,7 +38,7 @@ void readController_Update(){
 
     while (Serials[ControllerSerial]->available() >= HowManyData )
     {
-        while ( Serials[ControllerSerial]->available() >= HowManyData * 2  &&  Serial1.peek() != start )
+        while ( Serials[ControllerSerial]->available() >= HowManyData * 2  &&  Serials[ControllerSerial]->peek() != start )
         {
             Serials[ControllerSerial]->read();
         }
@@ -51,7 +53,6 @@ void readController_Update(){
             dController.five = Serials[ControllerSerial]->read();
             dController.six = Serials[ControllerSerial]->read();
             dController.fin = Serials[ControllerSerial]->read();
-
 
             if (uint8_t(dController.fin) == 0xAA)
             {
@@ -69,8 +70,11 @@ void readController_Update(){
     if ( uint8_t(dGood.one) == 0xDD && uint8_t(dGood.two) == 0xDD && uint8_t(dGood.three) == 0xDD && u_int8_t(dGood.four) == 0xDD && uint8_t(dGood.five) == 0xDD && uint8_t(dGood.six) == 0xDD)
     {
         Serial.println("unpearing");
+        ContollerConnected = 0;
     }
-    else{
+    else
+    {
+        ContollerConnected = 1;
         Serial.print(dGood.one);
         Serial.print(", ");
         Serial.print(dGood.two);
@@ -93,38 +97,51 @@ void readController_Update(){
 
 
     Serial.print("L.Stickdeg: ");
-    Serial.print( radian_deg(L.Stickdeg()) );
+    Serial.print( L.Stickdeg() );
     Serial.print(", R.Stickdeg: ");
-    Serial.print( radian_deg(R.Stickdeg()) );
-    Serial.print(", ");
+    Serial.print( R.Stickdeg() );
+    Serial.print(",  L.Stickpowe: ");
+    Serial.print( L.Stickpower() );
+    Serial.print(", R.Stickpowe: ");
+    Serial.print( R.Stickpower() );
+
+
 
     //クリックしているかの、配列を作成。
-    for (int i = 0; i < 8; i++){
-        if ( (dGood.five >> Key1.Numbers[i] & 0b01) == 0b01 ){
+    for (int i = 0; i < 8; i++)
+    {
+        if ( (dGood.five >> Key1.Numbers[i] & 0b01) == 0b01 )
+        {
             Key1.values[i] = true;
         }
-        else{
+        else
+        {
             Key1.values[i] = false;
         }
     }
-    for (int i = 0; i < 8; i++){
-        if ( (dGood.six >> Key2.Numbers[i] & 0b01) == 0b01){
+    for (int i = 0; i < 8; i++)
+    {
+        if ( (dGood.six >> Key2.Numbers[i] & 0b01) == 0b01)
+        {
             Key2.values[i] = true;
         }
-        else{
+        else
+        {
             Key2.values[i] = false;
         }
     }
 
     //配列を確認して、どのキーが押されているかを表示。"Key?.values[Defineしたkeys] == true"でいけます。
-    for (int i = 0; i < 8; i++){
+    for (int i = 0; i < 8; i++)
+    {
         if (Key1.values[Key1.Numbers[i]] == true)
         {
             Serial.print(Key1.Names[i]);
             Serial.print(", ");
         }
     }
-    for (int i = 0; i < 8; i++){
+    for (int i = 0; i < 8; i++)
+    {
         if (Key2.values[Key2.Numbers[i]] == true)
         {
             Serial.print(Key2.Names[i]);

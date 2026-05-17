@@ -8,11 +8,13 @@
 #include "UltraSonic.h"
 #include "convert.h"
 #include "Jyunya.h"
+#include "readController.h"
+#include "Kicker.h"
 
 
 //ButtonのPINを設定する。
-#define Senter 11    //Decide
-#define buttom 12    //Down
+#define Senter 12    //Decide
+#define buttom 11    //Down
 #define front 10     //Up
 
 //Screen.cppで使用する && 外部で使用する可能性のある変数たち
@@ -26,6 +28,7 @@ extern Adafruit_SSD1306 display;
 enum class Status { Menu, Gyro, Line, Kicker, ONKicker, Runnning, Controller, Speed, UltraSonic, Timer, TimeSelect };
 
 
+
 class Screen_Gyro
 {
 
@@ -33,16 +36,22 @@ public:
     float degf;
     int degi;
     float cosGf(){
-        return cosf(degf);
+        return cosf(deg_radian(degf));
     }
     float sinGf(){
-        return sinf(degf);
+        return sinf(deg_radian(degf));
     }
 
     float cosGi(){
-        return cosf(degi);
+        return cosf(deg_radian(degi));
     }
     float sinGi(){
-        return sinf(degi);
+        return sinf(deg_radian(degi));
     }
 };
+
+extern Screen_Gyro BNOdeg;
+extern Screen_Gyro MIXdeg;
+extern Screen_Gyro LSMdeg;
+
+extern int MotorSpeed;

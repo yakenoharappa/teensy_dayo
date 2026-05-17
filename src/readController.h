@@ -57,7 +57,10 @@ class Stick
             return y/128;
         }
         float Stickdeg(){
-            return atan2(-y, x);   //普通にatan2(y,x)で良い気がする。
+            return changedeg(radian_deg(atan2(x, y)), 180);   //普通にatan2(y,x)で良い気がする。
+        }
+        float Stickpower(){
+            return sqrtf(abs(x) * abs(x) + abs(y) * abs(y));
         }
 };
 
@@ -108,3 +111,5 @@ extern Stick L;
 extern Stick R;
 extern Button Key1;
 extern Button Key2;
+
+extern bool ContollerConnected;

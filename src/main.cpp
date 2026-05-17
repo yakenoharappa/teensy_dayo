@@ -6,6 +6,9 @@
 #include "readController.h"
 #include "Screen.h"
 #include "Kicker.h"
+//#include "MotorDriver.h"
+#include "motor_convert.h"
+#include "motors.hpp"
 //Alt+Shift+A → コメントアウトショートカット
 
 /* Teensy 新規プロジェクトの作り方
@@ -23,9 +26,12 @@
 */
 
 
+motor_convert controller;
+
 //おれは藤城や
 
 void setup() {
+    
     int TrySetup = 0;
     while (!Serial && TrySetup < 4)
     {
@@ -33,15 +39,22 @@ void setup() {
         TrySetup ++;
         delay(100);
     }
+    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(PIN_LED1, OUTPUT);
+    pinMode(PIN_LED2, OUTPUT);
+    pinMode(PIN_LED3, OUTPUT);
+
+    Serial1.begin(115200);
+    motorsInit(&Serial2, 115200);
+    Serial2.begin(115200);
 
 
-
-
-    //Jyunya_Setup();
-    //readController_Setup();
+    Jyunya_Setup();
+    readController_Setup();
+    //motors_Setup();
     //Kicker_Setup();
     Screen_Setup();
-    //Screen_Setup();
+
 
 }
 
@@ -49,10 +62,22 @@ void setup() {
 
 void loop() {
     //GyroDataを更新
-    //Jyunya_Update();
+    Jyunya_Update();
     //basic_running(30,30,0,0);
 
-    //readController_Update();
+    readController_Update();
+    
+    controller.MotorDeg(135, 45, 225, 315);
+    if (L.Stickpower() > 2 && ContollerConnected == true)
+    {
+        controller.MotorPersents(L.Stickdeg());
+    }
+    else{
+        controller.stoping();
+    }
+
+    //motors_Update();
+
     Screen_Update();
     
     /* 
@@ -61,7 +86,6 @@ void loop() {
         Kick();
     }
     */
-    //Screen_Update();
 
     delay(10); 
 }

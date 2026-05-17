@@ -13,11 +13,19 @@
     ということになるんだ！！！！！
 */
 
-    uint32_t _baudrate;
-    uint8_t _toggle_pin = 0xFF;
 
-    bool _is_toggle_on = false;
+class MotorDriver
+{
+private:
+    /* data */
+public:
+    enum class DriverNumber { DSR1202, ORIGINAL };
+    int UsedDriver;
+    uint8_t Start_Header;
+    uint8_t End_Footer;
 
 
-void stop();
-void move();
+    void stop();
+    void move(int motor1, int motor2, int motor3, int motor4);
+    void sendMotor(int16_t value1, int16_t value2, int16_t value3, int16_t value4);
+};

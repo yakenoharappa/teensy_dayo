@@ -9,7 +9,7 @@ float deg_radian(int deg){
 
 //radian → deg(度数法)
 int radian_deg(float radian){
-    int deg = radian * M_PI / 180;
+    int deg = radian * 180 / M_PI;
     return deg;
 }
 
