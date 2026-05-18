@@ -1,5 +1,4 @@
 #include "MotorDriver.h"
-#include "Serial.h"
 
 //停止関数
 void MotorDriver::stop(){

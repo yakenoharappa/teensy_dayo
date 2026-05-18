@@ -551,7 +551,7 @@ void Screen_Update(){
             display.display();
             delay(1);
         }
-        Kick();
+        Kicker_end();
 
         LeftRight = 2;
         now = Status::Menu;

@@ -1,4 +1,5 @@
 #include "UltraSonic.h"
+
 UltraSonic MyUSonic;
 
 UltraSonic1::UltraSonic1(int _trig_pin, int _echo_pin){

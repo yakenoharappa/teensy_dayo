@@ -5,18 +5,19 @@
 
 
 // PIDの計算機実体を1つ作成
-PID headingPID(2.5f, 0.01f, 0.1f, 0.2f); 
+PID headingPID(0.2f, 0.2f, 0.2f, 0.2f); 
 
 void motors_Setup()
 {
     // シリアル
     Serial.begin(9600L); // デバッグ用
 
-    motorsInit(&Serial1, 115200);            // モーター初期化
+    digitalWrite(PIN_LED1, HIGH);
+    //motorsInit(&Serial1, 115200);            // モーター初期化
 
     motorsSetMoveSign(1, 1, 1, 1);           // 移動のための符号をセット
     motorsSetPdSign(1, 1, 1, 1);             // PID制御のための符号をセット
-    motorsSetDegPosition(315, 45, 225, 135); // モータの物理位置をセット
+    motorsSetDegPosition(135, 45, 225, 315); // モータの物理位置をセット
     motorsStop();                            // 停止させておく
 
     // 不感帯の設定（0.5度以内のズレなら微調整を無視する）
@@ -44,15 +45,15 @@ void motors_Update()
     // 2. motors.cpp 側のPID計算を更新
     // ==========================================
     // この1行で、内部の現在の向きと目標値の計算がすべて更新されます
-    motorsPidProcess(&headingPID, DAC_port, R.Stickdeg() );
+    motorsPidProcess(&headingPID, yaw_BNO, R.Stickdeg() );
 
     // ==========================================
     // 3. モーター駆動
     // ==========================================
-    if (move_power > 0.0f) 
+    if (L.Stickpower() > 2 && ContollerConnected == true)   //move_power > 0.0f
     {
         // 移動入力がある場合は、移動しながらPIDで姿勢を維持する
-        motorsMove(move_direction, move_power);
+        motorsMove(L.Stickdeg(), MotorSpeed);
     } 
     else 
     {

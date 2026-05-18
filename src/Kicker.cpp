@@ -2,7 +2,7 @@
 
 unsigned long LastKickedTime = millis();
 bool KickerCharge = 0;
-uint CoolTime = 50;
+uint CoolTime = 2500;
 
 
 void Kicker_Setup(){
@@ -13,12 +13,13 @@ void Kicker_Setup(){
 
 void Kick(){
     
+/* 
     if (digitalRead(FET2) == HIGH)
     {
         digitalWrite(FET2, LOW);
         digitalWrite(FET1, HIGH);
         digitalWrite(PIN_LED2, LOW);
-    }
+    } */
     
     if ( (millis() - LastKickedTime) > CoolTime && KickerCharge == 1 )
     {
@@ -28,13 +29,13 @@ void Kick(){
         KickerCharge = 0;
         digitalWrite(PIN_LED2, HIGH);
     }
-    else if ( (millis() - LastKickedTime) <= CoolTime ){
+    else if ( (millis() - LastKickedTime) <= CoolTime && (millis() - LastKickedTime) >= 300 ){
         digitalWrite(FET2, LOW);
         digitalWrite(FET1, HIGH);
         KickerCharge = 0;
         digitalWrite(PIN_LED2, LOW);
     }
-    else{                                   // >Cooltimeで、Kicker == 0
+    else if ( (millis() - LastKickedTime) >= 300 ){      // >Cooltimeで、Kicker == 0
         digitalWrite(FET2, LOW);
         digitalWrite(FET1, HIGH);
         KickerCharge = 1;
@@ -42,20 +43,21 @@ void Kick(){
     }
     
 
+/* 
     if (digitalRead(FET2) == HIGH)
     {
         digitalWrite(FET2, LOW);
         digitalWrite(FET1, HIGH);
         digitalWrite(PIN_LED2, LOW);
-    }
+    } */
 }
 
-void Kicker_Return(){
-    if (digitalRead(FET2) == HIGH)
-    {
+void Kicker_end(){
+    //if (digitalRead(FET2) == HIGH && (millis() - LastKickedTime) >= 300 )
+    //{
         digitalWrite(FET2, LOW);
         digitalWrite(FET1, HIGH);
         digitalWrite(PIN_LED2, LOW);
-    }
+    //}
 
 }
