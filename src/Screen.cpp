@@ -600,7 +600,45 @@ void Screen_Update(){
             LeftRight = 3;
             now = Status::Menu;
         }
+        else if ( UpKey() == true )
+        {
+            now = Status::ControllerB;
+        }
         break;
+
+    case Status::ControllerB:
+
+        display.setTextColor(1);
+        display.setTextWrap(false);
+        display.setCursor(0, 0);
+        display.print("Contoller");
+        display.drawRect(32, 37, 7, 7, 1);
+        display.drawRect(24, 45, 7, 7, 1);
+        display.drawRect(16, 37, 7, 7, 1);
+        display.drawRect(24, 29, 7, 7, 1);
+        display.drawCircle(94, 48, 4, 1);
+        display.drawCircle(103, 39, 4, 1);
+        display.drawCircle(85, 39, 4, 1);
+        display.drawCircle(94, 30, 4, 1);
+        display.drawCircle(44, 54, 9, 1);
+        display.drawCircle(75, 54, 9, 1);
+        display.drawTriangle(68, 35, 78, 39, 68, 42, 1);
+        display.drawRect(43, 36, 11, 7, 1);
+        display.drawRect(82, 9, 24, 10, 1);
+        display.drawRect(15, 9, 24, 9, 1);
+        display.drawRect(82, 20, 24, 5, 1);
+        display.drawRect(15, 20, 24, 5, 1);
+        if (Enter() == true)
+        {
+            LeftRight = 3;
+            now = Status::Menu;
+        }
+        else if ( UpKey() == true )
+        {
+            now = Status::Controller;
+        }
+        break;
+
     case Status::Speed:
         display.setTextSize(2);
         display.setCursor(0, 0);

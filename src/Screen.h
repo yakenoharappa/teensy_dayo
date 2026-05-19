@@ -25,7 +25,7 @@ extern long LastTouched;
 #define SCREEN_WIDTH 128    //画面ピクセル幅
 #define SCREEN_HEIGHT 64    //画面ピクセル高さ
 extern Adafruit_SSD1306 display;
-enum class Status { Menu, Gyro, Line, Kicker, ONKicker, Runnning, Controller, Speed, UltraSonic, Timer, TimeSelect };
+enum class Status { Menu, Gyro, Line, Kicker, ONKicker, Runnning, Controller, ControllerB, Speed, UltraSonic, Timer, TimeSelect };
 
 
 

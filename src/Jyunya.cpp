@@ -163,18 +163,18 @@ void Jyunya_Update() {
         theta = 0; //LSM用
         Serial.print("Button");
         Serial.print(Reset);
-        digitalWrite(PIN_LED3, ON);
+        //digitalWrite(PIN_LED3, ON);
     }
     else
     {
-        digitalWrite(PIN_LED3, OFF);
+        //digitalWrite(PIN_LED3, OFF);
     }
     new_yaw = new_yaw - Reset;
     new_yaw = angle(new_yaw);
     Serial.print("途中:");
     Serial.println(new_yaw);
 
-    if ( isnan(new_yaw) || ( fabs(new_check - new_yaw) <= 0.05 && fabs(new_yaw - theta) > 20 ) ) //ぶっ壊れor変化無し
+    if ( isnan(new_yaw) || ( fabs(new_check - new_yaw) <= 0.03 && fabs(new_yaw - theta) > 20 ) ) //ぶっ壊れor変化無し
     {
         if ( fabs(millis() - last_OKtime) > 150 && fabs(new_yaw) >= 0.06 ) //時間がちょいたちand0.06°以上
         {
@@ -216,7 +216,7 @@ void Jyunya_Update() {
     else
     {
         Serial.print("LSM中");
-        if ( fabs(millis() - last_OKtime) > 1000 )
+        if ( fabs(millis() - last_OKtime) < 1000 )
         {
             degcheck = yaw_BNO;
             new_check = new_yaw;
@@ -249,7 +249,7 @@ void Jyunya_Update() {
     if ( fabs(yaw_BNO - theta) < 20 && fabs(new_check - new_yaw) >= 0.07 )
     {
         
-        DAC_port = yaw_BNO;
+        //DAC_port = yaw_BNO;
         //theta = yaw_BNO;
         
     }
@@ -261,7 +261,7 @@ void Jyunya_Update() {
             theta += 0.01;
             checkTime = millis();
         }
-        DAC_port = theta;
+        //DAC_port = theta;
     }
 
 
@@ -274,17 +274,17 @@ void Jyunya_Update() {
     if ( fabs(DAC_port) < 10 )
     {
         digitalWrite(LED_BUILTIN, ON);
-        digitalWrite(PIN_LED2, OFF);
+        //digitalWrite(PIN_LED2, OFF);
     }
     else if ( fabs(DAC_port) > 170 )
     {
         digitalWrite(LED_BUILTIN, OFF);
-        digitalWrite(PIN_LED2, ON);
+        //digitalWrite(PIN_LED2, ON);
     }
     else
     {
         digitalWrite(LED_BUILTIN, OFF);
-        digitalWrite(PIN_LED2, OFF);
+        //digitalWrite(PIN_LED2, OFF);
     }
 
 

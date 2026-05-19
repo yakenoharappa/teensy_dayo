@@ -85,7 +85,7 @@ void motorsDirectMove(int value_1ch, int value_2ch, int value_3ch, int value_4ch
     _dsr.move(value_1ch, value_2ch, value_3ch, value_4ch);
 }
 
-#define PD_MAX 80.0f
+#define PD_MAX 20.0f
 #define PD_MOVING_MAX 20.0f
 
 void motorsMove(float deg, float power)
@@ -94,7 +94,7 @@ void motorsMove(float deg, float power)
 
     float powers[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     for (int i = 0; i < 4; i++)
-        powers[i] = -sinf(radians(deg + _deg_position[i])) * float(MotorSpeed * _move_sign[i]);
+        powers[i] = -sinf(radians( _deg_position[i] - deg)) * float(MotorSpeed * _move_sign[i]);
 
     // 最大出力を探す
     float strongest_abs_power = 0.0f;
