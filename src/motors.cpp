@@ -1,29 +1,68 @@
-#include <Arduino.h>
-#include "motors.hpp"
-#include "Jyunya.h"
-#include "readController.h"
+#include <Wire.h>
 
+//#include "global.h"
+#include "readController.h"
+#include "Screen.h"
+#include "Kicker.h"
+//#include "MotorDriver.h"
+//#include "motor_convert.h"
+//#include "motors.hpp"
+#include "PID.hpp"
+#include "motors.hpp"
+
+//motor_convert controller;
+
+//おれは藤城や
+
+/* void setup() {
+    
+    int TrySetup = 0;
+    while (!Serial && TrySetup < 4)
+    {
+        Serial.begin(115200);
+        TrySetup ++;
+        delay(100);
+    }
+
+    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(PIN_LED1, OUTPUT);
+    pinMode(PIN_LED2, OUTPUT);
+    pinMode(PIN_LED3, OUTPUT);
+
+    Serial1.begin(115200);
+    //motorsInit(&Serial2, 115200);
+    Serial2.begin(115200);
+
+
+    Jyunya_Setup();
+    readController_Setup();
+    Kicker_Setup();
+    //motors_Setup();
+    Screen_Setup();
+
+
+} */
 
 // PIDの計算機実体を1つ作成
-PID headingPID(0.2f, 0.2f, 0.2f, 0.2f); 
+PID headingPID(0.6f, 0.6f, 0.6f, 0.6f); 
 
 void motors_Setup()
 {
     // シリアル
-    Serial.begin(9600L); // デバッグ用
+    Serial.begin(115200); // デバッグ用
 
-    digitalWrite(PIN_LED1, LOW);
-    //motorsInit(&Serial1, 115200);            // モーター初期化
+    digitalWrite(PIN_LED1, HIGH);
+    //motorsInit(&Serial1, 115200);          // モーター初期化
 
-    motorsSetMoveSign(-1, -1, -1, -1);           // 移動のための符号をセット
-    motorsSetPdSign(0, 0, 0, 0);             // PID制御のための符号をセット
+    motorsSetMoveSign(-1, -1,- 1,- 1);       // 移動のための符号をセット
+    motorsSetPdSign(1, 1, 1, 1);             // PID制御のための符号をセット
     motorsSetDegPosition(135, 45, 225, 315); // モータの物理位置をセット
     motorsStop();                            // 停止させておく
 
     // 不感帯の設定（0.5度以内のズレなら微調整を無視する）
     headingPID.setDeadband(0.5f);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 20; i++)
     {
         motorsStop();
         delay(100);
@@ -32,34 +71,46 @@ void motors_Setup()
 
 void motors_Update()
 {
-    // ==========================================
-    // 1. 各種データの準備（本来はセンサーやコントローラから取得）
-    // ==========================================
-    //float current_degree = 0.0f;  // 現在のロボットの向き（ジャイロの値をここに割り当てる）
-    //float target_degree = 0.0f;   // 目標とする向き（正面 = 0.0度）
-    
-    //float move_direction = 0.0f;  // 移動したい方向（0度=前, 90度=右...）
-    //float move_power = 50.0f;      // 移動パワー（0 〜 100）
 
-    // ==========================================
-    // 2. motors.cpp 側のPID計算を更新
-    // ==========================================
     // この1行で、内部の現在の向きと目標値の計算がすべて更新されます
-    motorsPidProcess(&headingPID, deg_radian(yaw_BNO), deg_radian(R.Stickdeg()) );
+    motorsPidProcess(&headingPID, yaw_BNO, 0.0f );
 
     // ==========================================
     // 3. モーター駆動
     // ==========================================
     if (L.Stickpower() > 2 && ContollerConnected == true)   //move_power > 0.0f
     {
-        // 移動入力がある場合は、移動しながらPIDで姿勢を維持する
-        motorsMove(L.Stickdeg(), MotorSpeed);
+        if(R.Stickpower() > 2 && ContollerConnected == true)
+        {
+        motorsPidProcess(&headingPID, yaw_BNO, -R.Stickdeg());
+        
+        
+        }
+        
+        
+    // 移動入力がある場合は、移動しながらPIDで姿勢を維持する
+    motorsMove(L.Stickdeg(), MotorSpeed);
+    
     } 
+
     else 
     {
-        // その場に停止している場合は、PIDの力だけで正面を向く（旋回のみ）
-        motorsPdMove(); 
+    motorsPdMove();
+       // motorsStop();
     }
 
-    delay(1); // 制御周期安定化のためのウェイト
+
+
+   // Screen_Update();
+    
+    
+/*     if (Key1.values[Cross] == HIGH && ContollerConnected == true)
+    {
+        Kick();
+    }
+    else if ( (millis() - LastKickedTime) >= 300 )
+    {
+        Kicker_end();
+    } 
+    delay(10); // 制御周期安定化のためのウェイト */
 }

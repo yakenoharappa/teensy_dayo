@@ -9,9 +9,9 @@
 bool KickerOnOff = 1;
 
 //controller.cppへ
+//float motor_bias[4] = {1.00 , 1.00 , 1.00 , 1.00};
 
 
-//Motor.cpp
 int MotorSpeed = 20;
 
 //Timer.h ?
@@ -241,6 +241,45 @@ void Screen_Update(){
         display.println("   Timer");
         display.println(" ");
         display.println("        v");
+
+
+        //追加
+        /* 構想
+            ・Lineが伸びて、画面外に達したら打てる
+            ・打てない間は、ブラックアウト（四角形を）
+            ・打てるときは、白く塗りつぶし
+        
+        //↓ブラックアウトバージョン
+        display.drawRect(0, 52, 128, 12, 1);
+        display.setTextColor(1, 0);
+        display.setTextWrap(false);
+        display.setCursor(47, 54);
+        display.print("Kicker");
+        display.drawLine(0, 62, (millis() - LastKickedTime) * 128 / CoolTime, 62, 1);
+        */
+        if ( (millis() - LastKickedTime) > CoolTime && KickerOnOff == true)
+        {
+            display.fillRect(0, 52, 128, 12, WHITE);
+            display.setTextColor(0);
+            display.setTextWrap(false);
+            display.setCursor(47, 54);
+            display.print("Kicker");
+            display.drawLine(0, 62, (millis() - LastKickedTime) * 128 / CoolTime, 62, BLACK);
+        }
+        else
+        {
+            display.drawRect(0, 52, 128, 12, 1);
+            display.setTextColor(1, 0);
+            display.setTextWrap(false);
+            display.setCursor(47, 54);
+            display.print("Kicker");
+            display.drawLine(0, 62, (millis() - LastKickedTime) * 128 / CoolTime, 62, 1);
+        }
+        
+        display.setTextColor(1);
+
+        //end
+
 
 
         if ( UpKey() == true )
@@ -607,27 +646,95 @@ void Screen_Update(){
         break;
 
     case Status::ControllerB:
-
-        display.setTextColor(1);
+        display.setTextColor(1, 0);
         display.setTextWrap(false);
         display.setCursor(0, 0);
         display.print("Contoller");
-        display.drawRect(32, 37, 7, 7, 1);
-        display.drawRect(24, 45, 7, 7, 1);
-        display.drawRect(16, 37, 7, 7, 1);
-        display.drawRect(24, 29, 7, 7, 1);
-        display.drawCircle(94, 48, 4, 1);
-        display.drawCircle(103, 39, 4, 1);
-        display.drawCircle(85, 39, 4, 1);
-        display.drawCircle(94, 30, 4, 1);
-        display.drawCircle(44, 54, 9, 1);
-        display.drawCircle(75, 54, 9, 1);
-        display.drawTriangle(68, 35, 78, 39, 68, 42, 1);
-        display.drawRect(43, 36, 11, 7, 1);
-        display.drawRect(82, 9, 24, 10, 1);
-        display.drawRect(15, 9, 24, 9, 1);
-        display.drawRect(82, 20, 24, 5, 1);
-        display.drawRect(15, 20, 24, 5, 1);
+
+        if ( Key1.values[Right] == true )
+            display.fillRect(32, 34, 7, 7, 1);  //right
+        else
+            display.drawRect(32, 34, 7, 7, 1);  //right
+
+        if ( Key1.values[Down] == true )
+            display.fillRect(24, 42, 7, 7, 1);  //down
+        else
+            display.drawRect(24, 42, 7, 7, 1);  //down
+
+        if ( Key1.values[Left] == true )
+            display.fillRect(16, 34, 7, 7, 1);  //left
+        else
+            display.drawRect(16, 34, 7, 7, 1);  //left
+
+        if ( Key1.values[Up] == true )
+            display.fillRect(24, 26, 7, 7, 1);  //up
+        else
+            display.drawRect(24, 26, 7, 7, 1);  //up
+
+        if ( Key1.values[Cross] == true )
+            display.fillCircle(94, 45, 4, 1);   //Cross
+        else
+            display.drawCircle(94, 45, 4, 1);   //Cross
+
+        if ( Key1.values[Circle] == true )
+            display.fillCircle(103, 36, 4, 1);  //Circle
+        else
+            display.drawCircle(103, 36, 4, 1);  //Circle
+
+        if ( Key1.values[Square] == true )
+            display.fillCircle(85, 36, 4, 1);   //Square
+        else
+            display.drawCircle(85, 36, 4, 1);   //Square
+
+        if ( Key1.values[Triangle] == true )
+            display.fillCircle(94, 27, 4, 1);   //Triangle
+        else
+            display.drawCircle(94, 27, 4, 1);   //Triangle
+
+        //Stickの基準円
+            display.drawCircle(44, 51, 9, 1);   //Left_Stick
+            display.drawCircle(75, 51, 9, 1);   //Right_Stick
+
+        if ( Key2.values[L3] == true )
+            writefillCircle(11 + (L.x * 9 / 128), 19 + (L.y * 9 / 128), 2);
+        else
+            writeCircle(11 + (L.x * 9 / 128), 19 + (L.y * 9 / 128), 2);
+
+        if ( Key2.values[R3] == true )
+            writefillCircle(-20 + (R.x * 9 / 128), 19 + (R.y * 9 / 128), 2);
+        else
+            writeCircle(11 + (R.x * 9 / 128), 19 + (R.y * 9 / 128), 2);
+
+        if ( Key2.values[START] == true )
+            display.fillTriangle(68, 32, 78, 36, 68, 39, 1);    //START
+        else
+            display.drawTriangle(68, 32, 78, 36, 68, 39, 1);    //START
+
+        if ( Key2.values[SELECT] == true )
+            display.fillRect(43, 33, 11, 7, 1); //SELECT
+        else
+            display.drawRect(43, 33, 11, 7, 1); //SELECT
+
+        if ( Key2.values[R2] == true )
+            display.fillRect(82, 10, 24, 6, 1); //R2
+        else
+            display.drawRect(82, 10, 24, 6, 1); //R2
+        
+        if ( Key2.values[L2] == true )
+            display.fillRect(15, 10, 24, 6, 1); //L2
+        else
+            display.drawRect(15, 10, 24, 6, 1); //L2
+
+        if ( Key2.values[R1] == true )
+            display.fillRect(82, 17, 24, 4, 1); //R1
+        else
+            display.drawRect(82, 17, 24, 4, 1); //R1
+
+        if ( Key2.values[L1] == true )
+            display.fillRect(15, 17, 24, 4, 1); //L1
+        else
+            display.drawRect(15, 17, 24, 4, 1); //L1
+
         if (Enter() == true)
         {
             LeftRight = 3;
@@ -647,6 +754,14 @@ void Screen_Update(){
         display.print("Speed: ");
         display.print(MotorSpeed);
         display.println("%");
+
+        //追加
+        display.setTextSize(1);
+        display.println();
+        display.print("Speed: ");
+        display.print(MotorSpeed);
+        display.println("%");
+        //end
         display.drawLine(15, SCREEN_HEIGHT/2 , (SCREEN_WIDTH - 30) * MotorSpeed /100 + 15 , SCREEN_HEIGHT/2, WHITE);
         display.drawCircle(15, SCREEN_HEIGHT/2, 1, WHITE);
         display.drawCircle(SCREEN_WIDTH - 15, SCREEN_HEIGHT/2, 1, WHITE);

@@ -20,6 +20,7 @@
 //Screen.cppで使用する && 外部で使用する可能性のある変数たち
 extern int LeftRight;
 extern long LastTouched;
+extern bool KickerOnOff;
 
 
 #define SCREEN_WIDTH 128    //画面ピクセル幅

@@ -3,6 +3,7 @@
 #include <Wire.h>
 #include <Arduino.h>
 #include <Adafruit_BNO055.h>
+#include "readController.h"
 
 extern Adafruit_BNO055 bno; //I2Cのアドレス定義
 

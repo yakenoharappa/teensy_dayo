@@ -13,7 +13,7 @@ void Kicker_Setup(){
 
 void Kick(){
     
-/* 
+    /* 
     if (digitalRead(FET2) == HIGH)
     {
         digitalWrite(FET2, LOW);
@@ -37,7 +37,7 @@ void Kick(){
     }
     else if ( (millis() - LastKickedTime) >= 300 ){      // >Cooltimeで、Kicker == 0
         digitalWrite(FET2, LOW);
-        digitalWrite(FET1, HIGH);
+        digitalWrite(FET1, LOW);
         KickerCharge = 1;
         digitalWrite(PIN_LED2, LOW);
     }
@@ -53,11 +53,17 @@ void Kick(){
 }
 
 void Kicker_end(){
-    //if (digitalRead(FET2) == HIGH && (millis() - LastKickedTime) >= 300 )
-    //{
+    if ( (millis() - LastKickedTime) >= CoolTime )
+    {
+        digitalWrite(FET2, LOW);
+        digitalWrite(FET1, LOW);
+        digitalWrite(PIN_LED2, LOW);
+    }
+    else
+    {
         digitalWrite(FET2, LOW);
         digitalWrite(FET1, HIGH);
         digitalWrite(PIN_LED2, LOW);
-    //}
+    }
 
 }

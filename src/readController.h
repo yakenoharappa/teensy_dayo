@@ -50,6 +50,8 @@ class Stick
     public:
         int8_t x;
         int8_t y;
+        float lastStickpower;
+        unsigned long lastStickTime;
         float cosStick(){
             return x/128;
         }
@@ -60,9 +62,11 @@ class Stick
             return changedeg(radian_deg(atan2(x, y)), 180);   //普通にatan2(y,x)で良い気がする。
         }
         float Stickpower(){
-            return sqrtf(abs(x) * abs(x) + abs(y) * abs(y));
+            return sqrtf((x * x) + (y * y));
         }
+        float Stickpower2;
 };
+
 
 const String Keys1Name[8] = {"Up", "Left", "Down", "Right", "Triangle", "Circle", "Cross", "Square"};
 const int Keys1[8] = {Up, Left, Down, Right, Triangle, Circle, Cross, Square};

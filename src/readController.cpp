@@ -21,11 +21,14 @@ void readController_Setup(){
         Key1.Names[i] = Keys1Name[i];
         Key2.Names[i] = Keys2Name[i];
     }
+    L.lastStickpower = 0;
+    R.lastStickpower = 0;
 }
 
 void readController_Update(){
     
-    /* Serial1.Checker
+    /* 
+    Serial1.Checker
     Serial.println(Serial1.read(), BIN);
     Serial.println(Serial1.read(), BIN);
     Serial.println(Serial1.read(), BIN);
@@ -88,12 +91,21 @@ void readController_Update(){
         Serial.println(dGood.six, BIN);
     }
 
+    if (L.lastStickpower > L.Stickpower())
+    {
+        L.Stickpower2 = L.Stickpower();
+    }
+    if (R.lastStickpower > R.Stickpower())
+    {
+        R.Stickpower2 = R.Stickpower();
+    }
 
     L.x = dGood.one;
     L.y = dGood.two;
     R.x = dGood.three;
     R.y = dGood.four;
-
+    L.lastStickpower = L.Stickpower();
+    R.lastStickpower = R.Stickpower();
 
 
     Serial.print("L.Stickdeg: ");

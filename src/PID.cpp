@@ -9,7 +9,7 @@ PID::PID(float kp,float ki, float kd, float lpf_alpha)
 void PID::setGains(float kp, float ki, float kd)
 {
     _kp = kp;
-    _kp = kp;
+   // _ki = ki;
     _kd = kd;
 }
 
@@ -41,13 +41,13 @@ void PID::process(float val, float target, bool angle)
     if (fabsf(error) < _deadband)
         error = 0.0f;
     _p_power = error * _kp; //PIDのPの部分を計算
-if (_useI) 
+/*     if (_useI) 
     {
         _integral += error * dt; // 誤差に時間をかけて積み上げる
         // 積分が溜まりすぎると、目標を超えても止まらなくなるので制限をかける
         _integral = constrain(_integral, -_i_limit, _i_limit); 
     }
-    float _i_power = _integral * _ki; //PIDのIの部分を計算
+    float _i_power = _integral * _ki; //PIDのIの部分を計算 */
     float diff = angle ? getDiffDeg(_value, _old_value) : (_value - _old_value);
 
     float raw_d_speed = diff / dt;
@@ -62,10 +62,10 @@ if (_useI)
     float total_power = 0.0f;
     if (_useP)
         total_power += _p_power;
-    if (_useI)
-        total_power += _i_power;
-    if (_useD)
-        total_power += _d_power; // Kdを負の値で渡している場合は加算、正なら減算
+/*     if (_useI)
+        total_power += _i_power; */
+/*     if (_useD)
+        total_power += _d_power;  */// Kdを負の値で渡している場合は加算、正なら減算
 
     _output = constrain(total_power, -100.0f, 100.0f);//constrain →　制限
 }

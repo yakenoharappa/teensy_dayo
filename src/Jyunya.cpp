@@ -157,7 +157,7 @@ void Jyunya_Update() {
 
 
 //リセットボタン
-    if (Button == 1)
+    if (Button == 1 || Key2.values[R3] == true)
     {
         Reset = new_yaw;
         theta = 0; //LSM用
