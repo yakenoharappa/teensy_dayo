@@ -75,18 +75,27 @@ void motors_Update()
     // この1行で、内部の現在の向きと目標値の計算がすべて更新されます
     motorsPidProcess(&headingPID, yaw_BNO, 0.0f );
     float MotorMoveSpeed = L.Stickpower() * MotorSpeed / 180.31 ;
-        if (Key2.values[L1] == HIGH && ContollerConnected == true )
-        {
-        
-        MotorMoveSpeed = MotorMoveSpeed * 1.5;
-        
-        
-        }
         if (Key2.values[L2] == HIGH && ContollerConnected == true )
         {
-        
-        MotorMoveSpeed = MotorMoveSpeed * 0.7;
-        
+            if (L.ana2 != 0 )
+            {
+                MotorMoveSpeed = MotorMoveSpeed *  (1 + (L.ana2 / 255 * 0.6));  //*0.6を追加！！
+            }
+            else
+            {
+                MotorMoveSpeed = MotorMoveSpeed *  1.3;
+            }
+        }
+        if (Key2.values[R2] == HIGH && ContollerConnected == true )
+        {
+            if (R.ana2 != 0 )
+            {
+                MotorMoveSpeed = MotorMoveSpeed *  (1 - (R.ana2 / 255 / 2));
+            }
+            else
+            {
+                MotorMoveSpeed = MotorMoveSpeed *  0.7;
+            }
         
         }
 

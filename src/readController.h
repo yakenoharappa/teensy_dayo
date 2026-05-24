@@ -6,7 +6,7 @@
 
 
 const uint8_t start = 0x80 ;
-const int HowManyData = 8;
+const int HowManyData = 10;
 
 class data
 {
@@ -19,6 +19,8 @@ public:
     int8_t four;
     uint8_t five;
     uint8_t six;
+    uint8_t seven;
+    uint8_t eight;
     uint8_t fin;
 };
 
@@ -50,19 +52,34 @@ class Stick
     public:
         int8_t x;
         int8_t y;
+        uint8_t ana2;
+
         float lastStickpower;
         unsigned long lastStickTime;
         float cosStick(){
-            return x/128;
+            if (abs(x) > 6)
+            {
+                return x;
+            }
+            else
+            {
+                return 0;
+            }
         }
         float sinStick(){
-            return y/128;
+            if (abs(y) > 6){
+                return y;
+            }
+            else
+            {
+                return 0;
+            }
         }
         float Stickdeg(){
-            return changedeg(radian_deg(atan2(x, y)), 180);   //普通にatan2(y,x)で良い気がする。
+            return changedeg(radian_deg(atan2(cosStick(), sinStick())), 180);   //普通にatan2(y,x)で良い気がする。
         }
         float Stickpower(){
-            return sqrtf((x * x) + (y * y));
+            return sqrtf( (cosStick() * cosStick() ) + ( sinStick() * sinStick() ) );
         }
         float Stickpower2;
 };

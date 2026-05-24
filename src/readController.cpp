@@ -2,6 +2,7 @@
 
 bool ContollerConnected = 0;
 
+
 data dController;
 data dGood;
 Stick L;
@@ -55,6 +56,8 @@ void readController_Update(){
             dController.four = Serials[ControllerSerial]->read();
             dController.five = Serials[ControllerSerial]->read();
             dController.six = Serials[ControllerSerial]->read();
+            dController.seven = Serials[ControllerSerial]->read();
+            dController.eight = Serials[ControllerSerial]->read();
             dController.fin = Serials[ControllerSerial]->read();
 
             if (uint8_t(dController.fin) == 0xAA)
@@ -65,6 +68,8 @@ void readController_Update(){
                 dGood.four = dController.four;
                 dGood.five = dController.five;
                 dGood.six = dController.six;
+                dGood.seven = dController.seven;
+                dGood.eight = dController.eight;
                 dGood.fin = dController.fin;
             }
         }
@@ -87,8 +92,12 @@ void readController_Update(){
         Serial.print(dGood.four);
         Serial.print(", ");
         Serial.print(dGood.five, BIN);
+        Serial.print(", "); 
+        Serial.print(dGood.six, BIN); 
         Serial.print(", ");
-        Serial.println(dGood.six, BIN);
+        Serial.print(dGood.seven);
+        Serial.print(", ");
+        Serial.println(dGood.eight);
     }
 
     if (L.lastStickpower > L.Stickpower())
@@ -100,12 +109,20 @@ void readController_Update(){
         R.Stickpower2 = R.Stickpower();
     }
 
+    Serial.print(L.sinStick());
+    Serial.print(", ");
+    Serial.print(L.cosStick());
+    Serial.println(", ");
+
+
     L.x = dGood.one;
     L.y = dGood.two;
     R.x = dGood.three;
     R.y = dGood.four;
     L.lastStickpower = L.Stickpower();
     R.lastStickpower = R.Stickpower();
+    L.ana2 = dGood.seven;
+    R.ana2 = dGood.eight;
 
 
     Serial.print("L.Stickdeg: ");
