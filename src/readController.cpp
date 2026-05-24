@@ -6,8 +6,8 @@ data dController;
 data dGood;
 Stick L;
 Stick R;
-Button Key1;
-Button Key2;
+Button Key1;    //Circle,Cross,Triangle,Square,↑↓←→
+Button Key2;    //L1~L3,R1~R3
 
 
 

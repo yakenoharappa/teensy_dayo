@@ -64,8 +64,8 @@ void PID::process(float val, float target, bool angle)
         total_power += _p_power;
 /*     if (_useI)
         total_power += _i_power; */
-/*     if (_useD)
-        total_power += _d_power;  */// Kdを負の値で渡している場合は加算、正なら減算
+    if (_useD)
+        total_power += - _d_power * 0.1f;  // Kdを負の値で渡している場合は加算、正なら減算
 
     _output = constrain(total_power, -100.0f, 100.0f);//constrain →　制限
 }

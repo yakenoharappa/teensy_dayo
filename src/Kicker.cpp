@@ -11,6 +11,18 @@ void Kicker_Setup(){
     LastKickedTime = millis();
 }
 
+void Kicker(){
+    if (Key1.values[Cross] == HIGH && ContollerConnected == true && KickerOnOff == true)
+    {
+        Kick();
+    }
+    else if ( (millis() - LastKickedTime) >= 300 )
+    {
+        Kicker_end();
+    } 
+}
+
+
 void Kick(){
     
     /* 

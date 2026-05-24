@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "global.h"
 #include "readController.h"
+#include "Screen.h"
 
 extern unsigned long LastKickedTime;
 enum class Kicker { Charge, CanUse, Kicking };
@@ -10,6 +11,7 @@ enum class Kicker { Charge, CanUse, Kicking };
 void Kicker_Setup();
 void Kick();
 void Kicker_end();
+void Kicker();
 
 extern unsigned long LastKickedTime;
 extern bool KickerCharge;

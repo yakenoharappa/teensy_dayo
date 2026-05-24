@@ -25,6 +25,26 @@
 motor_convert controller;
 
 //おれは藤城や
+bool Move = 0;
+unsigned long MoveSelectTime = 0;
+
+
+void StartEnd()
+{
+    if ( ContollerConnected == true && Key1.values[START] == true && (millis() - MoveSelectTime) > 30 )
+    {
+        if (Move == true)
+        {
+            Move = false;
+            MoveSelectTime = millis();
+        }
+        else
+        {
+            Move = true;
+            MoveSelectTime = millis();
+        }
+    }
+}
 
 void setup() {
     
@@ -36,10 +56,12 @@ void setup() {
         delay(100);
     }
 
+    //LED_Setup
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(PIN_LED1, OUTPUT);
     pinMode(PIN_LED2, OUTPUT);
     pinMode(PIN_LED3, OUTPUT);
+
 
     Serials[MOTORSerial]->begin(115200);
     //motorsInit(&Serial2, 115200);
@@ -62,9 +84,10 @@ void loop() {
     //basic_running(30,30,0,0);
 
     readController_Update();
-    
+    StartEnd();
 
-/*     controller.MotorDeg(135, 45, 225, 315);
+/* 
+    controller.MotorDeg(135, 45, 225, 315);
     if (L.Stickpower() > 2 && ContollerConnected == true)
     {
         controller.MotorPersents(L.Stickdeg());
@@ -79,7 +102,7 @@ void loop() {
     Screen_Update();
     
     
-    if (Key1.values[Cross] == HIGH && ContollerConnected == true && KickerOnOff == true)
+    if (Key2.values[R1] == HIGH && ContollerConnected == true && KickerOnOff == true)
     {
         Kick();
     }

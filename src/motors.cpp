@@ -60,7 +60,7 @@ void motors_Setup()
     motorsStop();                            // 停止させておく
 
     // 不感帯の設定（0.5度以内のズレなら微調整を無視する）
-    headingPID.setDeadband(0.5f);
+    headingPID.setDeadband(10.0f);
 
     for (int i = 0; i < 20; i++)
     {
@@ -74,6 +74,23 @@ void motors_Update()
 
     // この1行で、内部の現在の向きと目標値の計算がすべて更新されます
     motorsPidProcess(&headingPID, yaw_BNO, 0.0f );
+    float MotorMoveSpeed = L.Stickpower() * MotorSpeed / 180.31 ;
+        if (Key2.values[L1] == HIGH && ContollerConnected == true )
+        {
+        
+        MotorMoveSpeed = MotorMoveSpeed * 1.5;
+        
+        
+        }
+        if (Key2.values[L2] == HIGH && ContollerConnected == true )
+        {
+        
+        MotorMoveSpeed = MotorMoveSpeed * 0.7;
+        
+        
+        }
+
+
 
     // ==========================================
     // 3. モーター駆動
@@ -89,12 +106,19 @@ void motors_Update()
         
         
     // 移動入力がある場合は、移動しながらPIDで姿勢を維持する
-    motorsMove(L.Stickdeg(), MotorSpeed);
+    motorsMove(L.Stickdeg(), MotorMoveSpeed);
     
     } 
 
     else 
     {
+
+        if(R.Stickpower() > 2 && ContollerConnected == true)
+        {
+        motorsPidProcess(&headingPID, yaw_BNO, -R.Stickdeg());
+        
+        
+        }
     motorsPdMove();
        // motorsStop();
     }

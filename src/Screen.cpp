@@ -13,6 +13,9 @@ bool KickerOnOff = 1;
 
 
 int MotorSpeed = 20;
+//↑モトモト
+//int MotorSpeed =  L.Stickpower() ;
+
 
 //Timer.h ?
 float Timer = 999999;
@@ -268,6 +271,7 @@ void Screen_Update(){
         }
         else
         {
+            display.fillRect(0, 52, 128, 11, 0);
             display.drawRect(0, 52, 128, 12, 1);
             display.setTextColor(1, 0);
             display.setTextWrap(false);
@@ -301,14 +305,11 @@ void Screen_Update(){
         }
         display.drawRect(senter_square(SCREEN_WIDTH - 10), 37 ,(SCREEN_WIDTH - 10), 13, WHITE);
 
-
-
         if (abs(LeftRight) % 7 == 0){
             //display.drawRect(senter_square(SCREEN_WIDTH - 10), 22 ,(SCREEN_WIDTH - 10), 13, WHITE);
             if ( Enter() == true )
             {
                 LastTouched = millis();
-
                 now = Status::Gyro;
                 LeftRight = 0;
             }
@@ -319,7 +320,6 @@ void Screen_Update(){
             if ( Enter() == true )
             {
                 LastTouched = millis();
-
                 now = Status::Line;
                 LeftRight = 0;
             }
@@ -329,7 +329,6 @@ void Screen_Update(){
             if ( Enter() == true )
             {
                 LastTouched = millis();
-
                 now = Status::Kicker;
                 LeftRight = 0;
             }
@@ -339,7 +338,6 @@ void Screen_Update(){
             if ( Enter() == true )
             {
                 LastTouched = millis();
-
                 now = Status::Controller;
                 LeftRight = 0;
             }
@@ -349,7 +347,6 @@ void Screen_Update(){
             if ( Enter() == true )
             {
                 LastTouched = millis();
-
                 now = Status::Speed;
                 LeftRight = 0;
             }
@@ -358,7 +355,6 @@ void Screen_Update(){
             if ( Enter() == true )
             {
                 LastTouched = millis();
-
                 now = Status::UltraSonic;
                 LeftRight = 0;
             }
@@ -367,7 +363,6 @@ void Screen_Update(){
             if ( Enter() == true )
             {
                 LastTouched = millis();
-
                 now = Status::Timer;
                 LeftRight = 0;
             }
@@ -382,9 +377,8 @@ void Screen_Update(){
         Serial.print("LeftRight");
         Serial.println(LeftRight);
 
-        
-
         break;
+    
     
     case Status::Gyro:
         Sita ++;
@@ -408,10 +402,10 @@ void Screen_Update(){
         writeCircle(0, 0, 15);
         writeCircle(35, 0, 15);
         writeCircle(-35, 0, 15);
-
-        display.drawLine(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + (MIXdeg.sinGi() * 15) + 0), (SCREEN_HEIGHT/2 - (MIXdeg.cosGi() * 15)), WHITE);
-        display.drawLine(SCREEN_WIDTH/2 + 35, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + (LSMdeg.sinGf() * 15) + 35), (SCREEN_HEIGHT/2 - (LSMdeg.cosGf() * 15)), WHITE);
-        display.drawLine(SCREEN_WIDTH/2 - 35, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + (BNOdeg.sinGf() * 15) - 35), (SCREEN_HEIGHT/2 - (BNOdeg.cosGf() * 15)), WHITE);
+                                                                              //ここに↓-くっつけた
+        display.drawLine(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + -(MIXdeg.sinGi() * 15) + 0), (SCREEN_HEIGHT/2 - (MIXdeg.cosGi() * 15)), WHITE);
+        display.drawLine(SCREEN_WIDTH/2 + 35, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + -(LSMdeg.sinGf() * 15) + 35), (SCREEN_HEIGHT/2 - (LSMdeg.cosGf() * 15)), WHITE);
+        display.drawLine(SCREEN_WIDTH/2 - 35, SCREEN_HEIGHT/2 , (SCREEN_WIDTH/2 + -(BNOdeg.sinGf() * 15) - 35), (SCREEN_HEIGHT/2 - (BNOdeg.cosGf() * 15)), WHITE);
         display.setTextSize(1);
         display.setCursor(20, 35);
         display.println("BNO");
@@ -584,6 +578,7 @@ void Screen_Update(){
         display.setCursor(15, 30);
         
         Kick();
+        Kick(); //繰り返す（2026-05-22_22:02
         display.println("Please wait");
         for (int i = senter_square(SCREEN_WIDTH - 10); i < SCREEN_WIDTH - senter_square(SCREEN_WIDTH - 10) ; i++){
             display.drawLine(senter_square(SCREEN_WIDTH - 10), 50, i, 50, WHITE);
@@ -757,10 +752,10 @@ void Screen_Update(){
 
         //追加
         display.setTextSize(1);
-        display.println();
-        display.print("Speed: ");
-        display.print(MotorSpeed);
-        display.println("%");
+        //display.println();
+        //display.print("Speed: ");
+        //display.print(MotorSpeed);
+        //display.println("%");
         //end
         display.drawLine(15, SCREEN_HEIGHT/2 , (SCREEN_WIDTH - 30) * MotorSpeed /100 + 15 , SCREEN_HEIGHT/2, WHITE);
         display.drawCircle(15, SCREEN_HEIGHT/2, 1, WHITE);
