@@ -12,7 +12,7 @@ bool KickerOnOff = 1;
 //float motor_bias[4] = {1.00 , 1.00 , 1.00 , 1.00};
 
 
-int MotorSpeed = 20;
+int MotorSpeed = 30;
 //↑モトモト
 //int MotorSpeed =  L.Stickpower() ;
 
@@ -578,7 +578,7 @@ void Screen_Update(){
         display.setCursor(15, 30);
         
         Kick();
-        Kick(); //繰り返す（2026-05-22_22:02
+        //Kick(); //繰り返す（2026-05-22_22:02
         display.println("Please wait");
         for (int i = senter_square(SCREEN_WIDTH - 10); i < SCREEN_WIDTH - senter_square(SCREEN_WIDTH - 10) ; i++){
             display.drawLine(senter_square(SCREEN_WIDTH - 10), 50, i, 50, WHITE);
@@ -691,12 +691,12 @@ void Screen_Update(){
             display.drawCircle(75, 51, 9, 1);   //Right_Stick
 
         if ( Key2.values[L3] == true )
-            writefillCircle(11 + (L.x * 9 / 128), 19 + (L.y * 9 / 128), 2);
+            writefillCircle(-20 + (L.x * 9 / 128), 19 + (L.y * 9 / 128), 2);
         else
-            writeCircle(11 + (L.x * 9 / 128), 19 + (L.y * 9 / 128), 2);
+            writeCircle(-20 + (L.x * 9 / 128), 19 + (L.y * 9 / 128), 2);
 
         if ( Key2.values[R3] == true )
-            writefillCircle(-20 + (R.x * 9 / 128), 19 + (R.y * 9 / 128), 2);
+            writefillCircle(11 + (R.x * 9 / 128), 19 + (R.y * 9 / 128), 2);
         else
             writeCircle(11 + (R.x * 9 / 128), 19 + (R.y * 9 / 128), 2);
 

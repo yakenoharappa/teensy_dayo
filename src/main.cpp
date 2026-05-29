@@ -61,6 +61,8 @@ void setup() {
     pinMode(PIN_LED1, OUTPUT);
     pinMode(PIN_LED2, OUTPUT);
     pinMode(PIN_LED3, OUTPUT);
+    
+    digitalWrite(PIN_LED3, HIGH);
 
 
     Serials[MOTORSerial]->begin(115200);
@@ -78,7 +80,7 @@ void setup() {
 
 
 void loop() {
-    digitalWrite(PIN_LED3, HIGH);
+    //digitalWrite(PIN_LED3, HIGH);
     //GyroDataを更新
     Jyunya_Update();
     //basic_running(30,30,0,0);
@@ -95,14 +97,15 @@ void loop() {
     else
     {
         controller.stoping();
-    }   */
+    }   
+*/
 
     motors_Update();
 
     Screen_Update();
     
     
-    if (Key2.values[R1] == HIGH && ContollerConnected == true && KickerOnOff == true)
+    if ( Key2.values[R1] == HIGH && ContollerConnected == true && KickerOnOff == true)
     {
         Kick();
     }

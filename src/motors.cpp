@@ -54,10 +54,25 @@ void motors_Setup()
     digitalWrite(PIN_LED1, HIGH);
     //motorsInit(&Serial1, 115200);          // モーター初期化
 
-    motorsSetMoveSign(-1, -1,- 1,- 1);       // 移動のための符号をセット
-    motorsSetPdSign(1, 1, 1, 1);             // PID制御のための符号をセット
-    motorsSetDegPosition(135, 45, 225, 315); // モータの物理位置をセット
-    motorsStop();                            // 停止させておく
+
+    #ifdef SecondRobot
+        //3Dプリンタ機体
+        motorsSetMoveSign(-1, 1,- 1, 1);       // 移動のための符号をセット
+        motorsSetPdSign(1, -1, 1, -1);             // PID制御のための符号をセット
+        motorsSetDegPosition(135, 315, 225, 45); // モータの物理位置をセット
+        motorsStop();                            // 停止させておく
+    #else
+    //機体１のやつ(ジュラルミン)
+        motorsSetMoveSign(-1, -1,- 1,- 1);       // 移動のための符号をセット
+        motorsSetPdSign(1, 1, 1, 1);             // PID制御のための符号をセット
+        motorsSetDegPosition(135, 45,   225, 315); // モータの物理位置をセット
+        motorsStop();                            // 停止させておく
+    #endif
+
+    /* 機体２のやつ
+
+
+    */
 
     // 不感帯の設定（0.5度以内のズレなら微調整を無視する）
     headingPID.setDeadband(10.0f);
@@ -86,17 +101,23 @@ void motors_Update()
                 MotorMoveSpeed = MotorMoveSpeed *  1.3;
             }
         }
+        else if ( Key1.values[Circle] == true )
+        {
+            MotorMoveSpeed = MotorMoveSpeed *  1.5;
+        }
+
         if (Key2.values[R2] == HIGH && ContollerConnected == true )
         {
-            if (R.ana2 != 0 )
+
+                            MotorMoveSpeed = MotorMoveSpeed *   (1 - R.ana2 * 0.3 /255 ) ;
+/*             if (R.ana2 != 0 )
             {
-                MotorMoveSpeed = MotorMoveSpeed *  (1 - (R.ana2 / 255 / 2));
+                MotorMoveSpeed = MotorMoveSpeed *   (1 - L.ana2 * 0.5 /255 )        (1 - ( (1 + (R.ana2 / 255)) / 3.5)) ;
             }
             else
             {
-                MotorMoveSpeed = MotorMoveSpeed *  0.7;
-            }
-        
+                MotorMoveSpeed = MotorMoveSpeed *  0.5;
+            } */
         }
 
 

@@ -2,12 +2,14 @@
 
 #include <Arduino.h>
 
+
 #include "PID.hpp"
 #include "Serial.h"
 #include "Screen.h"
 #include "motorsDSR.hpp"
 //#include "MotorDriver.h"
 
+#define SecondRobot
 
 bool motorsInit(HardwareSerial *serial, uint32_t baudrate);
 void motorsSetDegPosition(float deg_1ch, float deg_2ch, float deg_3ch, float deg_4ch); // モータの位置をセット
